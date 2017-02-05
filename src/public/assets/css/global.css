@@ -25,3 +25,7 @@ input[type="text"] {
 .box > div:nth-child(even) {
   background: #d2f4ff;
 }
+
+#canvas {
+  border: solid 1px #ccc;
+}

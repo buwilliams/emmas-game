@@ -1,17 +1,22 @@
-var canvasSize = { width: 800, height: 300 };
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+var gameState = {
+  running: false,
+  width: 800,
+  height: 500,
+  players: {},
+  enemies: [],
+  frameCount: 1,
+  frameCountTriggerEnemyMove: 20
+};
 
-var print = function(message) {
-  $('#paper').append("<div>"+message+"</div>");
-}
-
-var square = function(color) { return { x: 0, y: 0, width: 20, height: 20, color: color }};
-
-var draw = function(obj) {
-  ctx.fillStyle = obj.color;
-  ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
-}
+var square = function(color) {
+  return {
+    x: 0,
+    y: 0,
+    width: 20,
+    height: 20,
+    color: color
+  };
+};
 
 var move = function(obj, direction) {
   var moveBy = obj.width;
@@ -27,34 +32,33 @@ var move = function(obj, direction) {
 }
 
 var renderFrame = function(player, enemies, shouldMove) {
-  ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
-  draw(player);
+  // TODO: emit draw() players
   for(var i=0; i<enemies.length; i++) {
     var moveDirection = Math.floor(Math.random() * 4) + 1;
-    //console.log(moveDirection);
     if(shouldMove) {
       if(moveDirection === 1) { move(enemies[i], 'up');}
       else if(moveDirection === 2) { move(enemies[i], 'down');}
       else if(moveDirection === 3) { move(enemies[i], 'left');}
       else if(moveDirection === 4) { move(enemies[i], 'right');}
     }
-    draw(enemies[i]);
+    // TODO: emit draw() enemies
   }
 };
 
+var xInside = function(objA, objB) {
+  return (objB.x >= objA.x && objB.x <= objA.x + objA.width) ? true : false;
+};
+
+var yInside = function(objA, objB) {
+  return (objB.y >= objA.y && objB.y <= objA.y + objA.height) ? true : false;
+};
+
+var objInside = function(objA, objB) {
+  return (xInside(objA, objB) && yInside(objA, objB)) ? true : false;
+}
+
 var doesObjectOverlap = function(objA, objB) {
-  // objects overlap if:
-  //   (objB.x >= objA.x && objB.x <= (objA.x + objA.width)) &&
-  //   (objB.y >= objA.y && objB.y <= (objA.y + objA.height))
-  if((objB.x >= objA.x && objB.x <= (objA.x + objA.width)) &&
-     (objB.y >= objA.y && objB.y <= (objA.y + objA.height))) {
-    return true;
-  } else if((objA.x >= objB.x && objA.x <= (objB.x + objB.width)) &&
-     (objA.y >= objB.y && objA.y <= (objB.y + objB.height))) {
-    return true;
-  } else {
-    return false;
-  }
+  return (objInside(objA, objB) || objInside(objB, objA)) ? true : false;
 }
 
 var detectCollision = function(player, enemies) {
@@ -67,21 +71,6 @@ var detectCollision = function(player, enemies) {
   }
   return false;
 };
-
-$(window).keydown(function(event) {
-  //console.log('keyCode', event.keyCode);
-  var key = event.keyCode;
-  var UP = 38, DOWN = 40, LEFT = 37, RIGHT = 39;
-  if(key === UP) {
-    move(lamby, 'up');
-  } else if (key === DOWN) {
-    move(lamby, 'down');
-  } else if (key === LEFT) {
-    move(lamby, 'left');
-  } else if (key === RIGHT) {
-    move(lamby, 'right');
-  }
-});
 
 var gameLoop = function() {
   //console.log('here');
@@ -102,15 +91,6 @@ var gameLoop = function() {
   }
 }
 
-// Settings
-var OFF = false;
-var ON = true;
-var enemies = [];
-var running = OFF;
-var frameCount = 1;
-var frameCountTriggerEnemyMove = 20;
-var lamby = square('pink');
-
 var createEnemies = function(numOfEnemies) {
   for(var i=0; i<numOfEnemies; i++) {
     var enemy = square('blue');
@@ -127,10 +107,3 @@ var power = function(on) {
     gameLoop();
   }
 }
-
-// Start
-print("Hello, this is Emma's game!");
-print("this game is going to be fun!");
-print("Run away from the blue guy!");
-
-power(ON);
