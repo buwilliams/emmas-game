@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 14px;
+  color: #999;
+}
+
+.box {
+  border: solid 1px #eee;
+  padding: 10px;
+  width: 100%;
+  height: 300px;
+  overflow-y: auto;
+  margin: 0 0 20px 0;
+}
+
+.box > div {
+  padding: 5px 10px;
+}
+
+.box > div:nth-child(even) {
+  background: #d2f4ff;
+}

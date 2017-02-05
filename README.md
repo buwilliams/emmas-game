@@ -16,3 +16,11 @@
 ## Later
 
 - make it run on a server so that you can use your phone/tablet/computer to play
+
+## Design
+
+- express js web server
+- use lokijs in memory database
+- use socket.io
+
+- gamer visit the '/' and gets the index.html page
