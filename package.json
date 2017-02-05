@@ -5,6 +5,8 @@
   "main": "src/server/index.js",
   "scripts": {
     "start": "node src/server/index.js",
+    "build": "browserify src/client/index.js -o src/public/assets/js/bundle.js",
+    "sb": "npm run build && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
